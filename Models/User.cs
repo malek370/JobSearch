@@ -11,5 +11,6 @@ namespace JobSearch.Models
         public string Email { get; set; } = "";
         public string HashedPassword { get; set; } = "";
         public byte[]? SaltPassword { get; set; } 
+        public List<Offer>? Offers { get; set; }
     }
 }
