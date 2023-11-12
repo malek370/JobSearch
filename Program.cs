@@ -1,7 +1,12 @@
 
 using JobSearch.Data;
 using JobSearch.Services.Authentification;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+using System;
 
 namespace JobSearch
 {
@@ -20,7 +25,36 @@ namespace JobSearch
             builder.Services.AddDbContext<JobDbContext>(
                 options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Description = """standard authorization header using bearerscheme. Exemple: "bearer {token}" """,
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                }
+                    );
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
+            builder.Services.AddDbContext<JobDbContext>(
+                options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                );
             builder.Services.AddScoped<Iauthentification, Authentification>();
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
+                AddJwtBearer(Options =>
+                {
+                    Options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8
+                        .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!)),
+                        ValidateAudience = false,
+                        ValidateIssuer = false
+
+                    };
+                });
+            builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
