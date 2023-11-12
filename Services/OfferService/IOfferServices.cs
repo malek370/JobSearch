@@ -7,8 +7,9 @@ namespace JobSearch.Services.OfferService
     {
         public Task<ServiceResponse<int>> AddOffer(AddOfferDTO addOffer);
         public Task<ServiceResponse<object>> DeleteOffer(int OfferId);
-        public Task<ServiceResponse<GetOfferDTO>> AddOffer(AddOfferDTO addOffer);
-
-
+        public Task<ServiceResponse<GetOfferDTO>> GetOffer(int OfferId);
+        public Task<ServiceResponse<List<GetOfferDTO>>> GetMyOffers();
+        public Task<ServiceResponse<List<GetOfferDTO>>> GetOfferByField(int fieldId);
+        public Task<ServiceResponse<List<GetOfferDTO>>> GetOfferByCompany(string companyName);
     }
 }
