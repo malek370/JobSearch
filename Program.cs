@@ -1,6 +1,7 @@
 
 using JobSearch.Data;
 using JobSearch.Services.Authentification;
+using JobSearch.Services.OfferService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,15 @@ namespace JobSearch
     {
         public static void Main(string[] args)
         {
+            /*
+             user for test:
+              {
+              "name": "user",
+              "email": "user@gmail.com",
+              "password": "user",
+              "userName": "user"
+}             }
+             */
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -22,6 +32,7 @@ namespace JobSearch
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddDbContext<JobDbContext>(
                 options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );
@@ -54,6 +65,7 @@ namespace JobSearch
 
                     };
                 });
+            builder.Services.AddScoped<IOfferServices,OfferServices>();
             builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
 
@@ -65,7 +77,7 @@ namespace JobSearch
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
