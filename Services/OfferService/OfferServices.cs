@@ -28,7 +28,7 @@ namespace JobSearch.Services.OfferService
                 if (!check_AddOfferDTO(addOffer)) throw new Exception("wrong inputs");
                 Offer offer = new Offer()
                 {Company=addOffer.Company,
-                 recruiter=await _dbContext.Users.FirstOrDefaultAsync(u=>u.Id==getUserId),
+                    recruiter = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == getUserId),
                  Field=await _dbContext.Fields.FirstOrDefaultAsync(f=>f.Id==addOffer.FieldId),
                  JobDescription=addOffer.JobDescription,
                 };
@@ -61,6 +61,7 @@ namespace JobSearch.Services.OfferService
             {
                 List <GetOfferDTO> offers = await _dbContext.Offers
                     .Include(o => o.recruiter)
+                    .Include(o=>o.Field)
                     .Where(r=>r.recruiter.Id==getUserId)
                     .Select(o=>_mapper.Map<GetOfferDTO>(o))
                     .ToListAsync();
@@ -91,10 +92,24 @@ namespace JobSearch.Services.OfferService
             try
             {
                 var offers = await _dbContext.Offers.
-                    Include(o=>o.recruiter).
                     Include(o=>o.Field).
                     Where(o=>o.Company.ToLower()==companyName.ToLower()).
                     Select(o=>_mapper.Map<GetOfferDTO>(o)).ToListAsync();
+                result.Data = offers;
+            }
+            catch (Exception ex) { result.Success = false; result.Message = ex.Message; }
+            return result;
+        }
+
+        public async Task<ServiceResponse<List<GetOfferDTO>>> GetOfferByDescription(string description)
+        {
+            ServiceResponse<List<GetOfferDTO>> result = new ServiceResponse<List<GetOfferDTO>>();
+            try
+            {
+                var offers = await _dbContext.Offers.
+                    Include(o => o.Field).
+                    Where(o => o.JobDescription.ToLower().Contains(description.ToLower())).
+                    Select(o => _mapper.Map<GetOfferDTO>(o)).ToListAsync();
                 result.Data = offers;
             }
             catch (Exception ex) { result.Success = false; result.Message = ex.Message; }
@@ -107,7 +122,6 @@ namespace JobSearch.Services.OfferService
             try
             {
                 var offers = await _dbContext.Offers.
-                    Include(o => o.recruiter).
                     Include(o => o.Field).
                     Where(o => o.Field.Id==fieldId).
                     Select(o => _mapper.Map<GetOfferDTO>(o)).ToListAsync();

@@ -1,4 +1,6 @@
-﻿namespace JobSearch.Models
+﻿using JobSearch.DTOs.FieldDTOs;
+
+namespace JobSearch.Models
 {
     public class Offer
     {

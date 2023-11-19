@@ -11,5 +11,6 @@ namespace JobSearch.Services.OfferService
         public Task<ServiceResponse<List<GetOfferDTO>>> GetMyOffers();
         public Task<ServiceResponse<List<GetOfferDTO>>> GetOfferByField(int fieldId);
         public Task<ServiceResponse<List<GetOfferDTO>>> GetOfferByCompany(string companyName);
+        public Task<ServiceResponse<List<GetOfferDTO>>> GetOfferByDescription(string description);
     }
 }

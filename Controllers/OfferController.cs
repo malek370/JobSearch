@@ -43,6 +43,11 @@ namespace JobSearch.Controllers
         {//not working
             return Ok(await _offerServices.GetOfferByField(fieldId));
         }
+        [HttpGet("offerbydescription")]
+        public async Task<IActionResult> GetOfferByDescription(string description)
+        {//not working
+            return Ok(await _offerServices.GetOfferByDescription(description));
+        }
         [HttpGet("offerbycompany")]
     public async Task<IActionResult> GetOfferByCompany(string companyName)
         {//not working

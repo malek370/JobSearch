@@ -1,4 +1,5 @@
-﻿using JobSearch.Models;
+﻿using JobSearch.DTOs.FieldDTOs;
+using JobSearch.Models;
 
 namespace JobSearch.DTOs.OfferDTOs
 {
@@ -8,6 +9,6 @@ namespace JobSearch.DTOs.OfferDTOs
         public string Company { get; set; } = "";
         public string JobDescription { get; set; } = "";
         public DateTime publishedOn { get; set; }
-        public Field Field { get; set; }
+        public GetFieldDTO Field { get; set; }
     }
 }
